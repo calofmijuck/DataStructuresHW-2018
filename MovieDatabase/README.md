@@ -12,23 +12,27 @@ Simple program for Movie Database.
     ( (ACTION, BATMAN BEGINS, ONG-BAK, THE MATRIX), (DRAMA, MILLION DOLLAR BABY, THE AVIATOR), (HORROR, HELLRAISER) )
 
 ## 지원하는 명령어
-삽입: 
+**삽입**: 
 
     INSERT %장르% %제목%
 해당 장르와 제목을 가진 영화를 삽입합니다. 이미 데이터베이스에 있는 영화와 장르, 제목이 모두 같으면 삽입하지 않습니다.
-삭제: 
+
+**삭제**: 
     
     DELETE %장르% %제목%
 해당 장르와 제목을 가진 영화를 삭제합니다. 각 장르의 마지막 영화가 삭제되면 장르도 삭제됩니다.
-검색: 
+
+**검색**: 
 
     SEARCH %검색어%
 제목에 검색어가 들어 있는 모든 영화들의 장르와 제목을 정렬된 순서로 출력합니다.
-출력: 
+
+**출력**: 
     
     PRINT
 데이터베이스의 전체 내용을 정렬된 순서로 출력합니다.
-종료: 
+
+**종료**: 
 
     QUIT
 프로그램을 종료합니다.
