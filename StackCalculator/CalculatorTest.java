@@ -14,17 +14,13 @@ public class CalculatorTest {
 				String input = br.readLine();
 				if (input.compareTo("q") == 0)
 					break;
-
 				command(input);
-				numStack.clear();
-				opStack.clear();
 			} catch (Exception e) {
 				System.out.println("ERROR");
-				numStack.clear();
-				opStack.clear();
-				// System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
-				//e.printStackTrace();
 			}
+			numStack.clear();
+			opStack.clear();
+			// After a line of calculation, reset all stacks.
 		}
 	}
 
@@ -34,9 +30,9 @@ public class CalculatorTest {
 		StringBuilder postfix = new StringBuilder(); // for storing postfix
 		boolean unary_flag = true, number_flag = true; // flags for unary operator and number
 		int parencount = 0; // counter for parentheses
-		for (int i = 0; i < eq.length; ++i) {
+		for (int i = 0; i < eq.length; ++i) { // loop for the whole input string
 			if (isNum(eq[i])) {
-				if (!number_flag) {
+				if (!number_flag) { // number cannot come right now
 					throw new Exception("Error!");
 				}
 				while (i < eq.length && isNum(eq[i])) { // get number
@@ -44,67 +40,66 @@ public class CalculatorTest {
 					++i;
 				}
 				i--;
-				postfix.append(sb + " ");
-				//System.out.print(sb.toString() + " ");
-				sb = new StringBuilder();
+				postfix.append(sb + " "); // append to the postfix expression
+				sb = new StringBuilder(); // reset
 				number_flag = false; // number cannot come anymore
 				unary_flag = false; // - cannot come after number
 			} else if (isOp(eq[i])) {
-				number_flag = true;
+				number_flag = true; // number can come after operand
 				if (opStack.isEmpty() || opStack.peek() == '(') { // if the stack is empty, push
-					// - may come after operator
-					if (unary_flag && eq[i] == '-') {
-						opStack.push('~');
+					if (unary_flag && eq[i] == '-') { // check for unary -
+						opStack.push('~'); // push ~ instead of -
 						continue;
 					}
 					opStack.push(eq[i]);
-					unary_flag = true;
 				} else {
+					if (unary_flag && eq[i] == '-') { // if unary, change - to ~
+						eq[i] = '~';
+					}
 					if (compare(eq[i], opStack.peek())) { // precedence: current > stack
 						opStack.push(eq[i]);
 					} else { // precedence: current <= stack
-						if (unary_flag && eq[i] == '-') { // if unary, change - to ~
-							eq[i] = '~';
-						}
-						// pop while the stack has an element, precedence: current > stack,
+						// pop while: the stack has an element, precedence: current > stack,
 						// both operands have same precedence and is left associative
 						while (!opStack.isEmpty() && !compare(eq[i], opStack.peek()) && (!isRightAssoc(opStack.peek()) || !isRightAssoc(eq[i]))) {
 							char operator = opStack.pop();
-							postfix.append(operator + " ");
-							// System.out.print(operator + " ");
+							postfix.append(operator + " "); // append to the postfix expression
 						}
-						opStack.push(eq[i]);
-						unary_flag = true;
+						opStack.push(eq[i]); // push current operator
 					}
 				}
-			} else if (eq[i] == '(') {
+				unary_flag = true; // unary can come after operator
+			} else if (eq[i] == '(') { // check open paren.
 				++parencount;
 				opStack.push(eq[i]);
-				unary_flag = true;
-			} else if (eq[i] == ')') {
+				unary_flag = true; // unary - can come after open paren.
+			} else if (eq[i] == ')') { // check close paren.
 				--parencount;
+				int operand_count = 0; // counts how many operands exist between (, ).
 				while (!opStack.isEmpty() && !(opStack.peek() == '(')) {
 					char operator = opStack.pop();
-					postfix.append(operator + " ");
-					//System.out.print(operator + " ");
+					postfix.append(operator + " "); // append to the postfix expression
+					operand_count++;
 				}
-				opStack.pop();
+				if(operand_count == 0) { // input contains ()
+					throw new Exception("Nothing between parens");
+				}
+				opStack.pop(); // pop the open paren
 			}
 		}
-		if (parencount != 0) {
+		if (parencount != 0) { // parenthesis do not match
 			throw new Exception("Error! Paren Mismatch!");
 		}
-		while (!opStack.isEmpty()) {
+		while (!opStack.isEmpty()) { // pop the remaining operands left in the stack
 			postfix.append(opStack.pop() + " ");
-			//System.out.print(opStack.pop() + " ");
 		}
-		System.out.println(postfix.deleteCharAt(postfix.length() - 1).toString());
 		long res = calculate(postfix.toString()); // calculate the value
+		System.out.println(postfix.deleteCharAt(postfix.length() - 1).toString()); // there will be an extra space at the end, so print everything except that
 		System.out.println(res);
 	}
 
 	private static long calculate(String postfix) throws Exception {
-		Scanner sc = new Scanner(postfix);
+		Scanner sc = new Scanner(postfix); // scanner for scanning the postfix expression
 		Long op1, op2; // operands
 		char operator; // operator
 		while (sc.hasNext()) {
@@ -134,9 +129,8 @@ public class CalculatorTest {
 								numStack.push(op1 * op2);
 								break;
 							case '^':
-								numStack.push((long) Math.pow(op1, op2));
+								numStack.push(pow(op1, op2));
 								break;
-
 							default:
 								break;
 						}
@@ -144,12 +138,13 @@ public class CalculatorTest {
 						op1 = numStack.pop();
 						numStack.push(-op1);
 					}
-				} catch (Exception e) {
+				} catch (Exception e) { // tried to pop too many items from stack
 					throw new Exception("Error! Empty Stack!");
 				}
 			}
 		}
-		if (numStack.size() != 1) {
+		// If the calculations are done correctly, there should be only one item left in the stack
+		if (numStack.size() != 1) { // there are more than 1 items left in stack
 			throw new Exception("Error in Expression Evalutaion!");
 		}
 		return numStack.pop();
@@ -191,23 +186,13 @@ public class CalculatorTest {
 		return (c == '^') || (c == '~');
 	}
 
-//	 private static long pow(long op1, long op2) throws Exception { // calculates op1 to the op2 power (op1 ^ op2)
-//		if (op2 == 0) {
-//			if (op1 == 0) {
-//				throw new Exception();
-//			}
-//			return 1;
-//		} else if (op2 == 1) {
-//			return op1;
-//		} else if (op2 % 2 == 0) {
-//			return pow(op1 * op1, op2 / 2);
-//		} else if (op2 % 2 == 1) {
-//			return op1 * pow(op1, op2 - 1);
-//		} else if (op1 == 0 && op2 < 0) {
-//			throw new Exception();
-//		} else {
-//			return pow((1 / op1), -op2);
-//		}
+	private static long pow(long op1, long op2) throws Exception { // calculates op1 to the op2 power (op1 ^ op2)
+		 if(op1 == 0 && op2 < 0) { // 0 to the negative powers cause ERROR
+		 	throw new Exception("Divided by 0!");
+		 } else {
+		 	return (long) Math.pow(op1, op2);
+		 }
+	}
 
 
 }
