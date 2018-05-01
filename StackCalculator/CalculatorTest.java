@@ -1,11 +1,10 @@
 import java.io.*;
-import java.util.Scanner;
 import java.util.Stack;
 
 public class CalculatorTest {
-	static Stack<Long> numStack = new Stack<Long>(); // stack for numbers
-	static Stack<Character> opStack = new Stack<Character>(); // stack for operators
-	static String operator_list = "^~*/%+-"; // operator list
+	private static Stack<Long> numStack = new Stack<>(); // stack for numbers
+	private static Stack<Character> opStack = new Stack<>(); // stack for operators
+	private static String operator_list = "^~*/%+-"; // operator list
 
 	public static void main(String args[]) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,7 +28,7 @@ public class CalculatorTest {
 		StringBuilder sb = new StringBuilder(); // for scanning numbers
 		StringBuilder postfix = new StringBuilder(); // for storing postfix
 		boolean unary_flag = true, number_flag = true; // flags for unary operator and number
-		int parencount = 0; // counter for parentheses
+		int paren_count = 0; // counter for parentheses
 		for (int i = 0; i < eq.length; ++i) { // loop for the whole input string
 			if (isNum(eq[i])) {
 				if (!number_flag) { // number cannot come right now
@@ -40,7 +39,8 @@ public class CalculatorTest {
 					++i;
 				}
 				i--;
-				postfix.append(sb + " "); // append to the postfix expression
+				postfix.append(sb); // append to the postfix expression
+				postfix.append(" ");
 				numStack.push(Long.parseLong(sb.toString())); // push the scanned number
 				sb = new StringBuilder(); // reset
 				number_flag = false; // number cannot come anymore
@@ -62,45 +62,48 @@ public class CalculatorTest {
 					} else { // precedence: current <= stack
 						// pop while: the stack has an element, precedence: current > stack,
 						// both operands have same precedence and is left associative
-						while (!opStack.isEmpty() && !compare(eq[i], opStack.peek()) && (!isRightAssoc(opStack.peek()) || !isRightAssoc(eq[i]))) {
+						while (!opStack.isEmpty() && !compare(eq[i], opStack.peek()) && (isLeftAssoc(opStack.peek()) || isLeftAssoc(eq[i]))) {
 							char operator = opStack.pop();
 							calculate(operator);
-							postfix.append(operator + " "); // append to the postfix expression
+							postfix.append(operator); // append to the postfix expression
+							postfix.append(" ");
 						}
 						opStack.push(eq[i]); // push current operator
 					}
 				}
 				unary_flag = true; // unary can come after operator
 			} else if (eq[i] == '(') { // check open paren.
-				++parencount;
+				++paren_count;
 				opStack.push(eq[i]);
 				unary_flag = true; // unary - can come after open paren.
 			} else if (eq[i] == ')') { // check close paren.
-				--parencount;
+				--paren_count;
 				int operand_count = 0; // counts how many operands exist between (, ).
 				while (!opStack.isEmpty() && !(opStack.peek() == '(')) {
 					char operator = opStack.pop();
 					calculate(operator);
-					postfix.append(operator + " "); // append to the postfix expression
+					postfix.append(operator); // append to the postfix expression
+					postfix.append(" ");
 					operand_count++;
 				}
 				if(operand_count == 0) { // input contains ()
-					throw new Exception("Nothing between parens");
+					throw new Exception("Nothing between parenthesis");
 				}
 				opStack.pop(); // pop the open paren
 			}
 		}
-		if (parencount != 0) { // parenthesis do not match
+		if (paren_count != 0) { // parenthesis do not match
 			throw new Exception("Error! Paren Mismatch!");
 		}
 		while (!opStack.isEmpty()) { // pop the remaining operands left in the stack
 			char operator = opStack.pop();
-			postfix.append(operator + " ");
+			postfix.append(operator);
+			postfix.append(" ");
 			calculate(operator);
 		}
 		// Check ! if the stack has only 1 element left here.
 		if(numStack.size() != 1) {
-			throw new Exception("Error in Evalution!");
+			throw new Exception("Error in Evaluation!");
 		}
 		System.out.println(postfix.deleteCharAt(postfix.length() - 1).toString()); // there will be an extra space at the end, so print everything except that
 
@@ -178,8 +181,8 @@ public class CalculatorTest {
 		} else return 4;
 	}
 
-	private static boolean isRightAssoc(char c) { // right associative operators
-		return (c == '^') || (c == '~');
+	private static boolean isLeftAssoc(char c) { // right associative operators
+		return (c != '^') && (c != '~');
 	}
 
 	private static long pow(long op1, long op2) throws Exception { // calculates op1 to the op2 power (op1 ^ op2)
