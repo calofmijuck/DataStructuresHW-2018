@@ -41,6 +41,7 @@ public class CalculatorTest {
 				}
 				i--;
 				postfix.append(sb + " "); // append to the postfix expression
+				numStack.push(Long.parseLong(sb.toString())); // push the scanned number
 				sb = new StringBuilder(); // reset
 				number_flag = false; // number cannot come anymore
 				unary_flag = false; // - cannot come after number
@@ -63,6 +64,7 @@ public class CalculatorTest {
 						// both operands have same precedence and is left associative
 						while (!opStack.isEmpty() && !compare(eq[i], opStack.peek()) && (!isRightAssoc(opStack.peek()) || !isRightAssoc(eq[i]))) {
 							char operator = opStack.pop();
+							calculate(operator);
 							postfix.append(operator + " "); // append to the postfix expression
 						}
 						opStack.push(eq[i]); // push current operator
@@ -78,6 +80,7 @@ public class CalculatorTest {
 				int operand_count = 0; // counts how many operands exist between (, ).
 				while (!opStack.isEmpty() && !(opStack.peek() == '(')) {
 					char operator = opStack.pop();
+					calculate(operator);
 					postfix.append(operator + " "); // append to the postfix expression
 					operand_count++;
 				}
@@ -91,64 +94,57 @@ public class CalculatorTest {
 			throw new Exception("Error! Paren Mismatch!");
 		}
 		while (!opStack.isEmpty()) { // pop the remaining operands left in the stack
-			postfix.append(opStack.pop() + " ");
+			char operator = opStack.pop();
+			postfix.append(operator + " ");
+			calculate(operator);
 		}
-		long res = calculate(postfix.toString()); // calculate the value
+		// Check ! if the stack has only 1 element left here.
+		if(numStack.size() != 1) {
+			throw new Exception("Error in Evalution!");
+		}
 		System.out.println(postfix.deleteCharAt(postfix.length() - 1).toString()); // there will be an extra space at the end, so print everything except that
-		System.out.println(res);
+
+		System.out.println(numStack.pop());
 	}
 
-	private static long calculate(String postfix) throws Exception {
-		Scanner sc = new Scanner(postfix); // scanner for scanning the postfix expression
+	private static void calculate(char operator) throws Exception {
+		// performs calculation each time an operand is popped from the opStack
 		Long op1, op2; // operands
-		char operator; // operator
-		while (sc.hasNext()) {
-			String curr = sc.next();
-			if (isNum(curr.charAt(0))) { // not operand ( starts with number)
-				numStack.push(Long.parseLong(curr)); // push number
-			} else {
-				try {
-					if ("^*/%+-".contains(curr)) { // binary operator
-						op2 = numStack.pop(); // pop 2 elements from stack
-						op1 = numStack.pop();
-						operator = curr.charAt(0);
-						switch (operator) {
-							case '+':
-								numStack.push(op1 + op2);
-								break;
-							case '-':
-								numStack.push(op1 - op2);
-								break;
-							case '%':
-								numStack.push(op1 % op2);
-								break;
-							case '/':
-								numStack.push(op1 / op2);
-								break;
-							case '*':
-								numStack.push(op1 * op2);
-								break;
-							case '^':
-								numStack.push(pow(op1, op2));
-								break;
-							default:
-								break;
-						}
-					} else { // unary -
-						op1 = numStack.pop();
-						numStack.push(-op1);
-					}
-				} catch (Exception e) { // tried to pop too many items from stack
-					throw new Exception("Error! Empty Stack!");
+		try {
+			if ("^*/%+-".indexOf(operator) >= 0) { // binary operator
+				op2 = numStack.pop(); // pop 2 elements from stack
+				op1 = numStack.pop();
+				switch (operator) {
+					case '+':
+						numStack.push(op1 + op2);
+						break;
+					case '-':
+						numStack.push(op1 - op2);
+						break;
+					case '%':
+						numStack.push(op1 % op2);
+						break;
+					case '/':
+						numStack.push(op1 / op2);
+						break;
+					case '*':
+						numStack.push(op1 * op2);
+						break;
+					case '^':
+						numStack.push(pow(op1, op2));
+						break;
+					default:
+						break;
 				}
+			} else { // unary -
+				op1 = numStack.pop();
+				numStack.push(-op1);
 			}
+		} catch (Exception e) { // tried to pop too many items from stack
+			throw new Exception("Error! Empty Stack!");
 		}
-		// If the calculations are done correctly, there should be only one item left in the stack
-		if (numStack.size() != 1) { // there are more than 1 items left in stack
-			throw new Exception("Error in Expression Evalutaion!");
-		}
-		return numStack.pop();
 	}
+
 
 	private static boolean isNum(char c) { // checks if it a number
 		int val = c - '0';
