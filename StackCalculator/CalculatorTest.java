@@ -27,7 +27,7 @@ public class CalculatorTest {
 		char[] eq = input.toCharArray(); // infix expression to scan
 		StringBuilder sb = new StringBuilder(); // for scanning numbers
 		StringBuilder postfix = new StringBuilder(); // for storing postfix
-		boolean unary_flag = true, number_flag = true; // flags for unary operator and number
+		boolean unary_flag = true, number_flag = true, paren_flag = false; // flags for unary operator, number, parenthesis
 		int paren_count = 0; // counter for parentheses
 		for (int i = 0; i < eq.length; ++i) { // loop for the whole input string
 			if (isNum(eq[i])) {
@@ -45,6 +45,7 @@ public class CalculatorTest {
 				sb = new StringBuilder(); // reset
 				number_flag = false; // number cannot come anymore
 				unary_flag = false; // - cannot come after number
+				paren_flag = false;
 			} else if (isOp(eq[i])) {
 				number_flag = true; // number can come after operand
 				if (opStack.isEmpty() || opStack.peek() == '(') { // if the stack is empty, push
@@ -72,22 +73,23 @@ public class CalculatorTest {
 					}
 				}
 				unary_flag = true; // unary can come after operator
+				paren_flag = false;
 			} else if (eq[i] == '(') { // check open paren.
 				++paren_count;
 				opStack.push(eq[i]);
 				unary_flag = true; // unary - can come after open paren.
+				paren_flag = true; // ( happened
 			} else if (eq[i] == ')') { // check close paren.
 				--paren_count;
-				int operand_count = 0; // counts how many operands exist between (, ).
+				// int operand_count = 0; // counts how many operands exist between (, ).
 				while (!opStack.isEmpty() && !(opStack.peek() == '(')) {
 					char operator = opStack.pop();
 					calculate(operator);
 					postfix.append(operator); // append to the postfix expression
 					postfix.append(" ");
-					operand_count++;
 				}
-				if(operand_count == 0) { // input contains ()
-					throw new Exception("Nothing between parenthesis");
+				if(paren_flag) { // was the previous char ( ?
+					throw new Exception("No valid expression between parenthesis");
 				}
 				opStack.pop(); // pop the open paren
 			}
@@ -192,7 +194,4 @@ public class CalculatorTest {
 		 	return (long) Math.pow(op1, op2);
 		 }
 	}
-
-
 }
-
