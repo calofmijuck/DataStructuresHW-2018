@@ -22,6 +22,8 @@ public class SortingTest {
 				Random rand = new Random();	// 난수 인스턴스를 생성한다.
 
 				value = new int[numsize];	// 배열을 생성한다.
+				tmp1 = new int[numsize];
+				tmp2 = new int[numsize];
 				for (int i = 0; i < value.length; i++)	// 각각의 배열에 난수를 생성하여 대입
 					value[i] = rand.nextInt(rmaximum - rminimum + 1) + rminimum;
 			} else {
@@ -29,6 +31,8 @@ public class SortingTest {
 				int numsize = Integer.parseInt(nums);
 
 				value = new int[numsize];	// 배열을 생성한다.
+				tmp1 = new int[numsize];
+				tmp2 = new int[numsize];
 				for (int i = 0; i < value.length; i++)	// 한줄씩 입력받아 배열원소로 대입
 					value[i] = Integer.parseInt(br.readLine());
 			}
@@ -36,7 +40,7 @@ public class SortingTest {
 			// 숫자 입력을 다 받았으므로 정렬 방법을 받아 그에 맞는 정렬을 수행한다.
 			while (true) {
 				int[] newvalue = (int[])value.clone();	// 원래 값의 보호를 위해 복사본을 생성한다.
-
+				arr = (int[]) value.clone(); // copy
 				String command = br.readLine();
 
 				long t = System.currentTimeMillis();
@@ -74,7 +78,7 @@ public class SortingTest {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
 		}
 	}
@@ -124,8 +128,39 @@ public class SortingTest {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoMergeSort(int[] value) {
-		
-		return value;
+		MergeSort(0, value.length - 1);
+		return arr;
+	}
+
+	private static void MergeSort(int p, int r) {
+		if(p < r) {
+			int q = (int) Math.floor((p + r) / 2);
+			MergeSort(p, q);
+			MergeSort(q + 1, r);
+			Merge(p, q, r);
+		}
+	}
+
+	private static void Merge(int p, int q, int r) {
+		int len1 = q - p + 1, len2 = r - q;
+		for(int i = 0; i < len1; i++) {
+			tmp1[i] = arr[p + i];
+		}
+		for(int j = 0; j < len2; j++) {
+			tmp2[j] = arr[q + j + 1];
+		}
+		tmp1[len1 + 1] = Integer.MAX_VALUE;
+		tmp2[len1 + 1] = Integer.MAX_VALUE;
+		int i = 0, j = 0;
+		for(int k = p; k <= r; k++) {
+			if(tmp1[i] <= tmp2[j]) { // stable sort
+				arr[k] = tmp1[i];
+				i++;
+			} else {
+				arr[k] = tmp2[j];
+				j++;
+			}
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
