@@ -80,6 +80,7 @@ public class SortingTest {
 			}
 		} catch (Exception e) {
 			System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
+			e.printStackTrace();
 		}
 	}
 
@@ -149,12 +150,8 @@ public class SortingTest {
 		for(int j = 0; j < len2; j++) {
 			tmp2[j] = arr[mid + j];
 		}
-
-		// this part is not optimal. Optimization needed.
-		tmp1[len1] = Integer.MAX_VALUE;
-		tmp2[len1] = Integer.MAX_VALUE;
-		int i = 0, j = 0; // indices
-		for(int k = start - 1; k < end; k++) {
+		int i = 0, j = 0, k = start - 1; // pointer indices for tmp1, tmp2, result array
+		while(i < len1 && j < len2) {
 			if(tmp1[i] <= tmp2[j]) { // stable sort
 				arr[k] = tmp1[i];
 				i++;
@@ -162,6 +159,14 @@ public class SortingTest {
 				arr[k] = tmp2[j];
 				j++;
 			}
+			k++;
+		}
+		// copy the remaining elements
+		for(; i < len1; i++, k++) {
+			arr[k] = tmp1[i];
+		}
+		for(; j < len2; j++, k++) {
+			arr[k] = tmp2[j];
 		}
 	}
 
@@ -200,6 +205,38 @@ public class SortingTest {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoRadixSort(int[] value) {
-		return (value);
+		int maximum = getMax(value);
+		for(int digit = 1; maximum / digit > 0; digit *= 10) {
+			value = countSort(value, digit);
+		}
+		return value;
+	}
+
+	private static int[] countSort(int[] arr, int digit) {
+		int[] res = new int[arr.length];
+		int[] count = new int[20]; // number of occurrences of each digit from -9 to 9
+		for(int i = 0; i < arr.length; i++) {
+			count[(arr[i] / digit) % 10 + 9]++; // occurrence of digit
+		}
+		for(int i = 1; i < 20; i++) {
+			count[i] += count[i - 1]; // accumulate occurrences to get the correct index
+		}
+		for(int i = arr.length - 1; i >= 0; i--) { // iterate backwards for stable sorting
+			int loc = (arr[i] / digit) % 10 + 9; // digit of current element
+			res[count[loc] - 1] = arr[i]; // count[loc] - 1 is the correct place
+			count[loc]--; // decrement
+		}
+		return res;
+	}
+
+	private static int getMax(int[] arr) {
+		// returns the element with largest absolute value, to figure out the largest existing digit from the input
+		int max = Math.abs(arr[0]);
+		for(int i = 1; i < arr.length; i++) {
+			if(Math.abs(arr[i]) > max) {
+				max = Math.abs(arr[i]);
+			}
+		}
+		return max;
 	}
 }
