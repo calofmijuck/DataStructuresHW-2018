@@ -132,27 +132,29 @@ public class SortingTest {
 		return arr;
 	}
 
-	private static void MergeSort(int p, int r) {
-		if(p < r) {
-			int q = (int) Math.ceil((p + r) / 2);
-			MergeSort(p, q);
-			MergeSort(q + 1, r);
-			Merge(p, q, r);
+	private static void MergeSort(int start, int end) {
+		if(start < end) {
+			int mid = (int) Math.ceil((start + end) / 2);
+			MergeSort(start, mid);
+			MergeSort(mid + 1, end);
+			Merge(start, mid, end);
 		}
 	}
 
-	private static void Merge(int p, int q, int r) {
-		int len1 = q - p + 1, len2 = r - q;
-		for(int i = 0; i < len1; i++) {
-			tmp1[i] = arr[p + i - 1];
+	private static void Merge(int start, int mid, int end) {
+		int len1 = mid - start + 1, len2 = end - mid;
+		for(int i = 0; i < len1; i++) { // copy array
+			tmp1[i] = arr[start + i - 1];
 		}
 		for(int j = 0; j < len2; j++) {
-			tmp2[j] = arr[q + j];
+			tmp2[j] = arr[mid + j];
 		}
+
+		// this part is not optimal. Optimization needed.
 		tmp1[len1] = Integer.MAX_VALUE;
 		tmp2[len1] = Integer.MAX_VALUE;
-		int i = 0, j = 0;
-		for(int k = p - 1; k < r; k++) {
+		int i = 0, j = 0; // indices
+		for(int k = start - 1; k < end; k++) {
 			if(tmp1[i] <= tmp2[j]) { // stable sort
 				arr[k] = tmp1[i];
 				i++;
@@ -164,16 +166,40 @@ public class SortingTest {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static int[] DoQuickSort(int[] value)
-	{
-		// TODO : Quick Sort 를 구현하라.
-		return (value);
+	private static int[] DoQuickSort(int[] value) {
+		QuickSort(0, value.length - 1);
+		return arr;
+	}
+
+	private static int partition(int low, int high) { // partitions from index low to high
+		int pivot = arr[high]; // selecting the last element as pivot
+		int i = low - 1; // i counts: (the number of elements smaller than pivot) - 1 + low
+		// thus i + 1 will be the correct place of the pivot element in the sorted array
+		int tmp;
+		for(int j = low; j < high; j++) {
+			if(arr[j] < pivot) { // put all elements smaller than pivot on the left part of array
+				i++;
+				tmp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = tmp;
+			}
+		}
+		tmp = arr[i + 1];
+		arr[i + 1] = pivot; // place the pivot at i + 1
+		arr[high] = tmp;
+		return i + 1; // correct location of pivot in the array
+	}
+
+	private static void QuickSort(int low, int high) {
+		if(low < high) {
+			int partIndex = partition(low, high); // partitioning index
+			QuickSort(low, partIndex - 1); // Sort left
+			QuickSort(partIndex + 1, high); // Sort right
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static int[] DoRadixSort(int[] value)
-	{
-		// TODO : Radix Sort 를 구현하라.
+	private static int[] DoRadixSort(int[] value) {
 		return (value);
 	}
 }
