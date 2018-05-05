@@ -128,13 +128,13 @@ public class SortingTest {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoMergeSort(int[] value) {
-		MergeSort(0, value.length - 1);
+		MergeSort(1, value.length);
 		return arr;
 	}
 
 	private static void MergeSort(int p, int r) {
 		if(p < r) {
-			int q = (int) Math.floor((p + r) / 2);
+			int q = (int) Math.ceil((p + r) / 2);
 			MergeSort(p, q);
 			MergeSort(q + 1, r);
 			Merge(p, q, r);
@@ -144,15 +144,15 @@ public class SortingTest {
 	private static void Merge(int p, int q, int r) {
 		int len1 = q - p + 1, len2 = r - q;
 		for(int i = 0; i < len1; i++) {
-			tmp1[i] = arr[p + i];
+			tmp1[i] = arr[p + i - 1];
 		}
 		for(int j = 0; j < len2; j++) {
-			tmp2[j] = arr[q + j + 1];
+			tmp2[j] = arr[q + j];
 		}
-		tmp1[len1 + 1] = Integer.MAX_VALUE;
-		tmp2[len1 + 1] = Integer.MAX_VALUE;
+		tmp1[len1] = Integer.MAX_VALUE;
+		tmp2[len1] = Integer.MAX_VALUE;
 		int i = 0, j = 0;
-		for(int k = p; k <= r; k++) {
+		for(int k = p - 1; k < r; k++) {
 			if(tmp1[i] <= tmp2[j]) { // stable sort
 				arr[k] = tmp1[i];
 				i++;
