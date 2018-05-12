@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class SortingTest {
+public class SortingTest2 {
 	static Random randInt = new Random();
 	static int size;
 
@@ -81,20 +81,14 @@ public class SortingTest {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoBubbleSort(int[] value) {
-		int cmp = 0; // counts number of comparisions
 		int temp; // temporary holder for swapping
 		for(int i = 0; i < value.length; ++i) {
-			cmp = 0;
 			for(int j = 0; j < value.length - i - 1; ++j) {
 				if(value[j] > value[j + 1]) {
 					temp = value[j + 1];
 					value[j + 1] = value[j];
 					value[j] = temp;
-					cmp++;
 				}
-				// if(cmp == 0) {
-				// 	return value;
-				// }
 			}
 		}
 		return value;
@@ -125,7 +119,7 @@ public class SortingTest {
 			value = maxHeapify(value, i);
 		}
 		int temp, idx = value.length - 1;
-		for(int i = 0; i < idx; ++i) {
+		for(int i = 0; i < idx; ++i) { // sort
 			temp = value[idx - i];
 			value[idx - i] = value[0];
 			value[0] = temp;
@@ -139,16 +133,16 @@ public class SortingTest {
 		int left = 2 * idx + 1, right = 2 * idx + 2;
 		int temp;
 		if(left < size)  { // left child exists
-            if(right < size && value[left] < value[right]) { // right child exists and right child is greater
-                left = right; // larger child is stored
-            }
-            if(value[idx] < value[left]) { // compare with current child
-                temp = value[idx];
-                value[idx] = value[left];
-                value[left] = temp;
-                value = maxHeapify(value, left);
-            }
-        }
+			if(right < size && value[left] < value[right]) { // right child exists and right child is greater
+				left = right; // larger child is stored
+			}
+			if(value[idx] < value[left]) { // compare with current child and swap if necessary
+				temp = value[idx];
+				value[idx] = value[left];
+				value[left] = temp;
+				value = maxHeapify(value, left); // max heapify
+			}
+		}
 		return value;
 	}
 
@@ -162,12 +156,12 @@ public class SortingTest {
 			return value;
 		} else {
 			int mid = (start + end) / 2;
-			int[] left = MergeSort(value, start, mid);
-			int[] right = MergeSort(value, mid + 1, end);
+			int[] left = MergeSort(value, start, mid); // sort left
+			int[] right = MergeSort(value, mid + 1, end); // sort right
 			// Merge
 			int[] tmp = new int[end - start + 1];
-			int ptrLeft = start, ptrRight = mid + 1, ptrNew = 0;
-			while(ptrLeft <= mid && ptrRight <= end) {
+			int ptrLeft = start, ptrRight = mid + 1, ptrNew = 0; // pointers to left and right arrays
+			while(ptrLeft <= mid && ptrRight <= end) { // compare and merge
 				if(left[ptrLeft] <= right[ptrRight]) {
 					tmp[ptrNew] = left[ptrLeft];
 					ptrLeft++;
@@ -187,7 +181,7 @@ public class SortingTest {
 				ptrNew++;
 				ptrRight++;
 			}
-			for(int i = start; i <= end; ++i) {
+			for(int i = start; i <= end; ++i) { // place it into the original array
 				value[i] = tmp[i - start];
 			}
 			return value;
@@ -210,7 +204,7 @@ public class SortingTest {
 			// thus i + 1 will be the correct place of the pivot element in the sorted array
 			int temp;
 			for(int j = start; j < end; ++j) {
-				if(value[j] < pivot) { // elements smaller than pivot are moved to the left parition
+				if(value[j] < pivot) { // elements smaller than pivot are moved to the left partition
 					++i;
 					temp = value[i];
 					value[i] = value[j];
@@ -220,7 +214,7 @@ public class SortingTest {
 			temp = value[i + 1];
 			value[i + 1] = pivot; // place the pivot at i + 1
 			value[end] = temp;
-			int partIndex = i + 1; // parition index
+			int partIndex = i + 1; // partition index
 			int[] res = QuickSort(value, start, partIndex - 1); // sort left
 			res = QuickSort(res, partIndex + 1, end); // sort right
 			return res;
@@ -231,8 +225,8 @@ public class SortingTest {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoRadixSort(int[] value) {
-		int maximum = getMax(value);
-		for(int digit = 1; maximum / digit > 0; digit *= 10) {
+		int maximum = getMax(value); // maximum digit
+		for(int digit = 1; maximum / digit > 0; digit *= 10) { // sort for each digit
 			value = countSort(value, digit);
 		}
 		return value;
@@ -240,12 +234,12 @@ public class SortingTest {
 
 	private static int[] countSort(int[] value, int digit) {
 		int[] res = new int[value.length];
-		int[] count = new int[20]; // number of occurences of each digit from -9 to 9
+		int[] count = new int[20]; // number of occurrences of each digit from -9 to 9
 		for(int i = 0; i < value.length; ++i) {
-			count[(value[i] / digit) % 10 + 9]++; // occurrnece of each digit
+			count[(value[i] / digit) % 10 + 9]++; // occurrence of each digit
 		}
 		for(int i = 1; i < 20; ++i) {
-			count[i] += count[i - 1]; // accumulate occurences to get the correct index
+			count[i] += count[i - 1]; // accumulate occurrences to get the correct index
 		}
 		for(int i = value.length - 1; i >= 0; --i) { // iterate backwards for stable sorting
 			int loc = (value[i] / digit) % 10 + 9; //digit of current element
