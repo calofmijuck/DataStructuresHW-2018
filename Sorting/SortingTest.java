@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class SortingTest2 {
+public class SortingTest {
 	static Random randInt = new Random();
 	static int size;
 
