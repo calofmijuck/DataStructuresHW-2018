@@ -198,13 +198,13 @@ public class SortingTest {
 
 	private static int[] QuickSort(int[] value, int start, int end) {
 		if(start < end) {
-			int temp;
 			// partition the Array
-			int pivotIdx = randInt.nextInt(end - start + 1) + start;
-			int pivot = value[pivotIdx]; // random element as pivot
+			int temp;
+			int pivotIdx = randInt.nextInt(end - start + 1) + start; // index of random pivot
+			int pivot = value[pivotIdx];
 			temp = value[end];
-			value[end] = temp;
-			value[pivotIdx] = temp;
+			value[end] = pivot;
+			value[pivotIdx] = temp; // swap pivot with the last element
 
 			int i = start - 1; // i counts: (the number of elements smaller than pivot) - 1 + low
 			// thus i + 1 will be the correct place of the pivot element in the sorted array
