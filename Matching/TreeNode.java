@@ -1,5 +1,3 @@
-import java.util.LinkedList;
-
 // TreeNode for AVL Tree with LinkedList
 public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>> {
     private E item;
@@ -8,7 +6,7 @@ public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>
     private TreeNode<E> right;
     private int leftHeight;
     private int rightHeight;
-
+    
     public TreeNode(E newItem) {
         this.item = newItem;
         this.list = new LinkedList<>();
@@ -70,6 +68,15 @@ public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>
 
     public int getRightHeight() {
         return this.rightHeight;
+    }
+
+    public int getBalance() {
+        return this.rightHeight - this.leftHeight;
+    }
+
+    // returns max(rightHeight, leftHeight)
+    public int getMaxHeight() {
+        return Math.max(rightHeight, leftHeight);
     }
 
     @Override
