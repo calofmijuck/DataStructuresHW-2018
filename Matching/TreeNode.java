@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 
+// TreeNode for AVL Tree with LinkedList
 public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>> {
     private E item;
     private LinkedList<Pair<Integer, Integer>> list;
