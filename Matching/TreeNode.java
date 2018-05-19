@@ -4,8 +4,8 @@ import java.util.LinkedList;
 public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>> {
     private E item;
     private LinkedList<Pair<Integer, Integer>> list;
-    private TreeNode left;
-    private TreeNode right;
+    private TreeNode<E> left;
+    private TreeNode<E> right;
     private int leftHeight;
     private int rightHeight;
 
@@ -16,7 +16,7 @@ public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>
         this.right = null;
     }
 
-    public TreeNode(E newItem, TreeNode left, TreeNode right) {
+    public TreeNode(E newItem, TreeNode<E> left, TreeNode<E> right) {
         this.item = newItem;
         this.list = new LinkedList<>();
         this.left = left;
@@ -31,19 +31,19 @@ public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>
         this.item = newItem;
     }
 
-    public TreeNode getLeft() {
+    public TreeNode<E> getLeft() {
         return this.left;
     }
 
-    public void setLeft(TreeNode left) {
+    public void setLeft(TreeNode<E> left) {
         this.left = left;
     }
 
-    public TreeNode getRight() {
+    public TreeNode<E> getRight() {
         return this.right;
     }
 
-    public void setRight(TreeNode right) {
+    public void setRight(TreeNode<E> right) {
         this.right = right;
     }
 
