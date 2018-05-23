@@ -1,12 +1,18 @@
 import java.util.Iterator;
 
-public class LinkedList<T> implements Iterable { // LinkedList with Iterator
+public class LinkedList<T> implements Iterable, Comparable<LinkedList<T>> { // LinkedList with Iterator
     private Node<T> head;
     private int size;
+    private MyString data;
 
-    public LinkedList() {
+    public LinkedList(String str) {
         head = null;
         size = 0;
+        data = new MyString(str);
+    }
+
+    public LinkedList() {
+        this(null);
     }
 
     public boolean isEmpty() {
@@ -110,5 +116,14 @@ public class LinkedList<T> implements Iterable { // LinkedList with Iterator
                 return res;
             }
         };
+    }
+
+    public MyString getData() {
+        return this.data;
+    }
+
+    @Override
+    public int compareTo(LinkedList<T> o) {
+        return this.data.toString().compareTo(o.getData().toString());
     }
 }
