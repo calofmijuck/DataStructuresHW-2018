@@ -1,4 +1,4 @@
-public class AVLTree<E extends Comparable<E>> {
+public class AVLTree<E extends Comparable<E>> implements Comparable<E> {
     private TreeNode<E> root;
 
     public AVLTree() {
@@ -100,5 +100,44 @@ public class AVLTree<E extends Comparable<E>> {
         return sb.toString();
     }
 
+    public TreeNode<E> search(E item) {
+        return search(root, item);
+    }
 
+    public TreeNode<E> search(TreeNode<E> root, E item) {
+        if(root == null) {
+            return null;
+        } else{
+            int cmp = root.getItem().compareTo(item);
+            if(cmp == 0) {
+                return root;
+            } else if(cmp > 0) {
+                return search(root.getLeft(), item);
+            } else {
+                return search(root.getRight(), item);
+            }
+        }
+    }
+
+
+    public String preorder() {
+        StringBuilder res = preorder(root);
+        return res.deleteCharAt(res.length() - 1).toString();
+    }
+
+    public StringBuilder preorder(TreeNode<E> root) {
+        StringBuilder sb = new StringBuilder();
+        if(root != null) {
+            sb.append(root.getItem());
+            sb.append(" ");
+            sb.append(preorder(root.getLeft()));
+            sb.append(preorder(root.getRight()));
+        }
+        return sb;
+    }
+
+    @Override
+    public int compareTo(E o) {
+        return 0;
+    }
 }
