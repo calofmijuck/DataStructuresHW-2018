@@ -6,7 +6,7 @@ public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>
     private TreeNode<E> right;
     private int leftHeight;
     private int rightHeight;
-    
+
     public TreeNode(E newItem) {
         this.item = newItem;
         this.list = new LinkedList<>();

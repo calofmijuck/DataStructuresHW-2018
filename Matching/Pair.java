@@ -1,10 +1,16 @@
-public class Pair<M, N> {
+public class Pair<M extends Comparable<M>, N extends Comparable<N>> {
     private final M first;
     private final N second;
+    private String data;
 
-    public Pair(M first, N second) {
+    public Pair(M first, N second, String data) {
         this.first = first;
         this.second = second;
+        this.data = data;
+    }
+
+    public Pair(M first, N second) {
+        this(first, second, "");
     }
 
     public M getFirst() {
@@ -13,6 +19,10 @@ public class Pair<M, N> {
 
     public N getSecond() {
         return this.second;
+    }
+
+    public String getData() {
+        return this.data;
     }
 
     public String toString() {
