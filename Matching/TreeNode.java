@@ -14,13 +14,6 @@ public class TreeNode<E extends Comparable<E>> implements Comparable<TreeNode<E>
         this.right = null;
     }
 
-    public TreeNode(E newItem, TreeNode<E> left, TreeNode<E> right) {
-        this.item = newItem;
-        this.list = new LinkedList<>();
-        this.left = left;
-        this.right = right;
-    }
-
     public E getItem() {
         return this.item;
     }
