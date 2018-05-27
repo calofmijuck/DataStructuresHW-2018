@@ -1,4 +1,4 @@
-public class MyString {
+public class MyString implements Comparable<MyString> { // String only with 6 chars
     private String data;
 
     public MyString(String str) {
@@ -6,10 +6,6 @@ public class MyString {
             throw new IllegalArgumentException("Illegal length: " + str.length());
         }
         this.data = str;
-    }
-
-    public MyString() {
-        this("");
     }
 
     public String toString() {
@@ -23,5 +19,10 @@ public class MyString {
             hash %= 100;
         }
         return hash;
+    }
+
+    @Override
+    public int compareTo(MyString o) {
+        return this.toString().compareTo(o.toString());
     }
 }
