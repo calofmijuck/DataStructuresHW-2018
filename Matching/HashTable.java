@@ -12,7 +12,10 @@ public class HashTable<K, V> {
         if(loadFactor <= 0) {
             throw new IllegalArgumentException("Illegal load factor: " + loadFactor);
         }
-        this.table = new ArrayList<>(initCap);
+        this.table = new ArrayList<>();
+        for(int i = 0; i < initCap; ++i) {
+            this.table.add(null);
+        }
         this.size = 0;
         this.loadFactor = loadFactor;
     }
@@ -40,7 +43,7 @@ public class HashTable<K, V> {
             throw new NullPointerException();
         }
         int hash = key.hashCode();
-        table.add(hash, value);
+        table.set(hash, value);
         ++size;
     }
 
@@ -48,5 +51,9 @@ public class HashTable<K, V> {
         int hash = key.hashCode();
         table.set(hash, null);
         --size;
+    }
+
+    public V at(int idx) {
+        return table.get(idx);
     }
 }
