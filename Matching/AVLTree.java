@@ -1,4 +1,4 @@
-public class AVLTree<E extends Comparable<E>> implements Comparable<E> {
+public class AVLTree<E extends Comparable<E>> {
     private TreeNode<E> root;
 
     public AVLTree() {
@@ -14,6 +14,7 @@ public class AVLTree<E extends Comparable<E>> implements Comparable<E> {
             root = new TreeNode<>(newItem);
             root.setLeftHeight(0);
             root.setRightHeight(0);
+            root.appendList(new Pair<>(i, j));
         } else {
             int cmp = root.getItem().compareTo(newItem);
             if(cmp > 0) { // go left and modify height
@@ -86,25 +87,11 @@ public class AVLTree<E extends Comparable<E>> implements Comparable<E> {
         return rightRotate(root);
     }
 
-    public String printSideways() {
-        return printSideways(root, "");
-    }
-
-    public String printSideways(TreeNode root, String indent) {
-        StringBuilder sb = new StringBuilder();
-        if(root != null) {
-            sb.append(printSideways(root.getRight(), indent + "    "));
-            sb.append(indent + root.getItem() + "\n");
-            sb.append(printSideways(root.getLeft(), indent + "    "));
-        }
-        return sb.toString();
-    }
-
     public TreeNode<E> search(E item) {
         return search(root, item);
     }
 
-    public TreeNode<E> search(TreeNode<E> root, E item) {
+    private TreeNode<E> search(TreeNode<E> root, E item) {
         if(root == null) {
             return null;
         } else{
@@ -119,13 +106,12 @@ public class AVLTree<E extends Comparable<E>> implements Comparable<E> {
         }
     }
 
-
     public String preorder() {
         StringBuilder res = preorder(root);
         return res.deleteCharAt(res.length() - 1).toString();
     }
 
-    public StringBuilder preorder(TreeNode<E> root) {
+    private StringBuilder preorder(TreeNode<E> root) {
         StringBuilder sb = new StringBuilder();
         if(root != null) {
             sb.append(root.getItem());
@@ -134,10 +120,5 @@ public class AVLTree<E extends Comparable<E>> implements Comparable<E> {
             sb.append(preorder(root.getRight()));
         }
         return sb;
-    }
-
-    @Override
-    public int compareTo(E o) {
-        return 0;
     }
 }
