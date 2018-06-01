@@ -39,7 +39,7 @@ public class Node {
         return line;
     }
 
-    public void addEdge(String destId, int weight) {
+    public void addEdge(String destId, Long weight) {
         adjList.add(new Edge(destId, weight));
     }
 
@@ -49,5 +49,9 @@ public class Node {
 
     public PriorityQueue<Edge> getAdjList() {
         return adjList;
+    }
+
+    public int hashCode() {
+        return id.hashCode();
     }
 }

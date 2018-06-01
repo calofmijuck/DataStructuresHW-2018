@@ -1,8 +1,8 @@
 public class Edge implements Comparable<Edge> { // Edge class
     private String destId; // destination node
-    private int weight; // weight
+    private Long weight; // weight
 
-    Edge(String id, int weight) {
+    Edge(String id, Long weight) {
         this.destId = id;
         this.weight = weight;
     }
@@ -15,16 +15,16 @@ public class Edge implements Comparable<Edge> { // Edge class
         return this.destId;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(Long weight) {
         this.weight = weight;
     }
 
-    public int getWeight() {
+    public Long getWeight() {
         return this.weight;
     }
 
     @Override
     public int compareTo(Edge o) { // compares the weight of edges
-        return Integer.compare(this.getWeight(), o.getWeight());
+        return Long.compare(this.getWeight(), o.getWeight());
     }
 }

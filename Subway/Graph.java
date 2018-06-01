@@ -5,8 +5,8 @@ public class Graph {
     private HashMap<String, LinkedList<String>> names; // key: name, value: list that contains id of nodes with name
 
     Graph() {
-        nodes = new HashMap<>(10000, 0.75f);
-        names = new HashMap<>(10000, 0.75f);
+        nodes = new HashMap<>(100000, 0.75f);
+        names = new HashMap<>(100000, 0.75f);
     } // initCap... :thinking:
 
     // add Node
@@ -21,15 +21,23 @@ public class Graph {
             LinkedList<String> list =  names.get(name);
             for(String str: list) { // iterate through all Nodes and add edges with weight 5
                 Node original = nodes.get(str);
-                addEdge(id, original.getId(), 5);
-                addEdge(original.getId(), id, 5);
+                addEdge(id, original.getId(), 5L);
+                addEdge(original.getId(), id, 5L);
             }
             list.add(id); // add current Node's id to the list
             names.put(name, list); // update the list
         }
     }
 
-    public void addEdge(String srcId, String destId, int weight) {
+    public HashMap<String, Node> getNodes() {
+        return nodes;
+    }
+
+    public HashMap<String, LinkedList<String>> getNames() {
+        return names;
+    }
+
+    public void addEdge(String srcId, String destId, Long weight) {
         Node srcNode = nodes.get(srcId); // get source node
         srcNode.addEdge(new Edge(destId, weight)); // add edge from source to destination with weight
     }
