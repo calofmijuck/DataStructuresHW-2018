@@ -9,7 +9,6 @@ public class Subway {
         fr = new BufferedReader(new FileReader(args[0]));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         // process file into graph data structure
-
         processFile();
 
         // input
@@ -182,13 +181,13 @@ public class Subway {
     }
 
     private static void print(LinkedList<String> path) throws Exception {
-        Iterator it = path.iterator();
+        Iterator<String> it = path.iterator();
         for(int i = 0; i < path.size() - 1; ++i) {
-            bw.write((String) it.next());
+            bw.write(it.next());
             bw.write(" ");
             bw.flush();
         }
-        bw.write((String) it.next());
+        bw.write(it.next());
         bw.write("\n");
         bw.flush();
     }

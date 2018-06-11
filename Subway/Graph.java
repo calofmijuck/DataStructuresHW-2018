@@ -44,15 +44,15 @@ public class Graph {
 
     // print graph's adjacency list of each node:
     public void print() {
-        Iterator it = nodes.entrySet().iterator();
+        Iterator<Map.Entry<String, Node>> it = nodes.entrySet().iterator();
         while(it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            Node curr = (Node) pair.getValue();
+            Map.Entry<String, Node> pair = it.next();
+            Node curr = pair.getValue();
             PriorityQueue<Edge> list = curr.getAdjList();
             System.out.print("Node: " + curr.getId() + " " + curr.getName() + " " + curr.getLine() + ", ");
-            Iterator iter = list.iterator();
+            Iterator<Edge> iter = list.iterator();
             while(iter.hasNext()) {
-                Edge e = (Edge) iter.next();
+                Edge e = iter.next();
                 System.out.print("(" + e.getDestId() + ", " + e.getWeight() + ") ");
             }
             System.out.println();
