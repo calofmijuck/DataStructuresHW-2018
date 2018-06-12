@@ -41,21 +41,4 @@ public class Graph {
         Node srcNode = nodes.get(srcId); // get source node
         srcNode.addEdge(new Edge(destId, weight)); // add edge from source to destination with weight
     }
-
-    // print graph's adjacency list of each node:
-    public void print() {
-        Iterator<Map.Entry<String, Node>> it = nodes.entrySet().iterator();
-        while(it.hasNext()) {
-            Map.Entry<String, Node> pair = it.next();
-            Node curr = pair.getValue();
-            PriorityQueue<Edge> list = curr.getAdjList();
-            System.out.print("Node: " + curr.getId() + " " + curr.getName() + " " + curr.getLine() + ", ");
-            Iterator<Edge> iter = list.iterator();
-            while(iter.hasNext()) {
-                Edge e = iter.next();
-                System.out.print("(" + e.getDestId() + ", " + e.getWeight() + ") ");
-            }
-            System.out.println();
-        }
-    }
 }
